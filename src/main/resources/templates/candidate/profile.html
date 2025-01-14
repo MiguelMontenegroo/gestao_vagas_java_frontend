@@ -24,22 +24,27 @@
     </div>
   </nav>
 
-  <div class="flex px-40 py-20 text-white justify-center">
-    <div class="grid bg-gray-800 w-6/12 columns-1 grid-cols-1 p-10 rounded justify-between gap-4">
-    <div class="justify-between w-full flex ">
-      <Span class="text-base text-gray-300 font-bold">Nome</Span>
-      <span class="text-base text-gray-300">Daniele</span>
-    </div>
+  <div class="container mx-auto mt-8 ">
+    <div class="bg-gray-800 p-8 rounded-lg shadow-md">
 
-    <div class="justify-between w-full flex ">
-      <Span class="text-base text-gray-300 font-bold">Usuário</Span>
-      <span class="text-base text-gray-300">Daniele</span>
-    </div>
+     <h1 class="text-2xl font-bold text-gray-100 text-center mb-8" th:text="${user.name}"></h1>
 
-    <div class="justify-between w-full flex ">
-      <Span class="text-base text-gray-300 font-bold">Email</Span>
-      <span class="text-base text-gray-300">Daniele</span>
-    </div>
+
+     <form th:object="${user}">
+    <div class="text-center mb-4  ">
+      <p class="text-gray-400 ">
+       <Span class="font-bold">Usuário: </Span> <span th:text="${user.username}"></span>
+      </p>
+      <p class="text-gray-400 ">
+       <Span class="font-bold">E-mail: </Span> <span th:text="${user.email}"></span>
+      </p>
+      <p class="text-gray-400 ">
+       <Span class="font-bold">Descrição: </Span> <span th:text="${user.description}"></span>
+      </p>
+     </div>
+     </form>
+
+  
 
 
     </div>

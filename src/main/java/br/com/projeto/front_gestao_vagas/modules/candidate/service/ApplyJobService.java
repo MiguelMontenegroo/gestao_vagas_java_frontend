@@ -10,7 +10,7 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import br.com.projeto.front_gestao_vagas.modules.dto.Token;
+import br.com.projeto.front_gestao_vagas.modules.candidate.dto.Token;
 
 @Service
 public class ApplyJobService {

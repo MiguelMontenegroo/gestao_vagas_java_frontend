@@ -13,7 +13,7 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpClientErrorException.Unauthorized;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import br.com.projeto.front_gestao_vagas.modules.dto.JobDTO;
+import br.com.projeto.front_gestao_vagas.modules.candidate.dto.JobDTO;
 
 import org.springframework.web.client.RestTemplate;
 

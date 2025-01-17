@@ -1,4 +1,4 @@
-package br.com.projeto.front_gestao_vagas.modules.dto;
+package br.com.projeto.front_gestao_vagas.modules.candidate.dto;
 
 import java.util.Date;
 import java.util.UUID;

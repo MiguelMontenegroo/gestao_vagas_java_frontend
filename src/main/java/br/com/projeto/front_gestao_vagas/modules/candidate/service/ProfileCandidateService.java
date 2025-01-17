@@ -14,7 +14,7 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.client.HttpClientErrorException.Unauthorized;
 
-import br.com.projeto.front_gestao_vagas.modules.dto.ProfileUserDTO;
+import br.com.projeto.front_gestao_vagas.modules.candidate.dto.ProfileUserDTO;
 
 @Service
 public class ProfileCandidateService {

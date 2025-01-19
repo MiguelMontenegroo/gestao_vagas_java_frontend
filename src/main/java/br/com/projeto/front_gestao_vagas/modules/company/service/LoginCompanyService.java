@@ -3,6 +3,7 @@ package br.com.projeto.front_gestao_vagas.modules.company.service;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -14,6 +15,9 @@ import br.com.projeto.front_gestao_vagas.modules.candidate.dto.Token;
 
 @Service
 public class LoginCompanyService {
+
+@Value("${host.api.gestao.vagas}")
+private String hostAPIGestaoVagas;
   
 public Token execute(String username, String password) {
      RestTemplate rt = new RestTemplate();
@@ -27,18 +31,14 @@ public Token execute(String username, String password) {
 
     HttpEntity<Map<String, String>> request = new HttpEntity<>(data, headers);
 
-    var result = rt.postForObject("http://localhost:8080/company/auth",request, Token.class);
+    var url = hostAPIGestaoVagas.concat("/company/auth");
+
+    var result = rt.postForObject(url,request, Token.class);
 
      System.out.println("Resultado da API: " + result);
 
 
-    if (result != null) {
-        System.out.println("Access Token: " + result.getAccess_token());
-        System.out.println("Roles: " + result.getRoles());
-        System.out.println("Expires In: " + result.getExpires_in());
-    } else {
-        System.out.println("A resposta da API é nula.");
-    }
+   
 
     return result;
 }

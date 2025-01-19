@@ -1,7 +1,9 @@
 package br.com.projeto.front_gestao_vagas.modules.company;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -14,7 +16,10 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import br.com.projeto.front_gestao_vagas.modules.company.dto.CreateCompanyDTO;
+import br.com.projeto.front_gestao_vagas.modules.company.dto.CreateJobsDTO;
 import br.com.projeto.front_gestao_vagas.modules.company.service.CreateCompanyService;
+import br.com.projeto.front_gestao_vagas.modules.company.service.CreateJobService;
+import br.com.projeto.front_gestao_vagas.modules.company.service.ListAllJobsCompanyService;
 import br.com.projeto.front_gestao_vagas.modules.company.service.LoginCompanyService;
 import br.com.projeto.front_gestao_vagas.utils.FormatErrorMessage;
 import jakarta.servlet.http.HttpSession;
@@ -28,6 +33,12 @@ public class CompanyController {
 
   @Autowired
   private LoginCompanyService loginCompanyService;
+
+  @Autowired
+  private CreateJobService createJobService;
+
+  @Autowired
+  private ListAllJobsCompanyService listAllJobsCompanyService;
   
    
   @GetMapping("/create")
@@ -59,20 +70,16 @@ public class CompanyController {
     
    try{
     var token = this.loginCompanyService.execute(username, password);
-    if (token != null && token.getAccess_token() != null) {
-      System.out.println("Access Token recebido no método signIn: " + token.getAccess_token());
-  } else {
-      System.out.println("Token ou Access Token é nulo no método signIn.");
-  }
-    //  var grants = token.getRoles().stream().map(role -> new SimpleGrantedAuthority("ROLE_"+role.toString().toUpperCase())).toList();
+   
+      var grants = token.getRoles().stream().map(role -> new SimpleGrantedAuthority("ROLE_"+role.toString().toUpperCase())).toList();
     
-    //  UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(null, null, grants);
-    //  auth.setDetails(token.getAccess_token());
+      UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(null, null, grants);
+      auth.setDetails(token.getAccess_token());
 
-    //  SecurityContextHolder.getContext().setAuthentication(auth);
-    //  SecurityContext securityContext = SecurityContextHolder.getContext();
-    //  session.setAttribute("SPRING_SECURITY_CONTEXT", securityContext);
-    //  session.setAttribute("token", token);
+      SecurityContextHolder.getContext().setAuthentication(auth);
+      SecurityContext securityContext = SecurityContextHolder.getContext();
+      session.setAttribute("SPRING_SECURITY_CONTEXT", securityContext);
+      session.setAttribute("token", token);
 
   return "redirect:/company/jobs";
 
@@ -83,4 +90,46 @@ public class CompanyController {
     return "redirect:/company/jobs";
    }
   }
+
+  @GetMapping("/jobs")
+  @PreAuthorize("hasRole('COMPANY')")
+  public String jobs(Model model) {
+    model.addAttribute("jobs", new CreateJobsDTO());  
+    return "company/jobs";
+  }
+
+  @PostMapping("/jobs")
+  @PreAuthorize("hasRole('COMPANY')")
+  public String createJobs(CreateJobsDTO jobs) {
+    var result = this.createJobService.execute(jobs, getToken());
+    System.out.println(result);
+    return "redirect:/company/jobs/list";
+  }
+
+  @GetMapping("/jobs/list")
+  @PreAuthorize("hasRole('COMPANY')")
+  public String list(Model model) {
+   
+   var result = this.listAllJobsCompanyService.execute(getToken());
+   model.addAttribute("jobs", result);  
+   System.out.println(result);
+    return "company/list";
+  }
+
+  @GetMapping("/logout")
+  public String logout(HttpSession session) {
+    SecurityContextHolder.getContext().setAuthentication(null);
+    SecurityContext securityContext = SecurityContextHolder.getContext();
+    session.setAttribute("SPRING_SECURITY_CONTEXT", securityContext);
+    session.setAttribute("token", null);
+
+    return "redirect:/company/login";
+  }
+
+   private String getToken() {
+    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    return authentication.getDetails().toString();
+  }
+
+
 }

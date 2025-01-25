@@ -1,12 +1,13 @@
-# Usar uma imagem base do JDK
+# Etapa 1: Construção do JAR
+FROM maven:3.8.7-openjdk-17 AS builder
+WORKDIR /app
+COPY pom.xml .
+COPY src ./src
+RUN mvn clean package -DskipTests
+
+# Etapa 2: Construção da imagem final
 FROM openjdk:17-jdk-alpine
-
-# Copiar o arquivo JAR para o contêiner
-ARG JAR_FILE=target/front_gestao_vagas-0.0.1-SNAPSHOT.jar
-COPY ${JAR_FILE} app.jar
-
-# Expor a porta que o Spring Boot usa (normalmente 8080)
+WORKDIR /app
+COPY --from=builder /app/target/front_gestao_vagas-0.0.1-SNAPSHOT.jar app.jar
 EXPOSE 8080
-
-# Comando para iniciar o aplicativo
-ENTRYPOINT ["java", "-jar", "/app.jar"]
+ENTRYPOINT ["java", "-jar", "app.jar"]

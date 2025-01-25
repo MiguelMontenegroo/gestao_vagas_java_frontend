@@ -1,5 +1,5 @@
 # Etapa 1: Construção do JAR
-FROM maven:3.8.7-openjdk-17 AS builder
+FROM maven:3.8.8-eclipse-temurin-17 AS builder
 WORKDIR /app
 COPY pom.xml .
 COPY src ./src
